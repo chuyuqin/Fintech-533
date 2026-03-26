@@ -1,0 +1,11 @@
+project:
+  type: website
+  output-dir: .
+
+website:
+  title: "hello"
+
+format:
+  html:
+    theme: cosmo
+    toc: true
