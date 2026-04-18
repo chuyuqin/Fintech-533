@@ -1,0 +1,3 @@
+symbol,entry_date,exit_date,entry_price,exit_price,shares,direction,breakout_level,atr_at_entry,stop_price,target_price,bars_held,gross_pnl,transaction_costs,net_pnl,return_on_trade,exit_reason,trade_outcome,test_start,test_end,chosen_param_id
+AAPL,2025-09-19 10:00:00,2025-09-22 11:00:00,242.84,254.012,179,long,241.32,4.654999999999993,237.25400000000002,254.012,19.77,1999.7879999999996,19.7873016,1980.0006983999995,0.045550388797737006,profit_target,Successful,2025-07-23,2025-10-20,0
+AAPL,2025-11-25 09:30:00,2025-12-01 09:30:00,279.38,277.59,138,long,277.32,6.115000000000001,272.042,294.056,39.0,-247.02000000000282,17.372372,-264.3923720000028,-0.006857637460173272,timeout,Timed out,2025-10-21,2026-01-21,0

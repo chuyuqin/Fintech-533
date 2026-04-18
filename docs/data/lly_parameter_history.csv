@@ -1,0 +1,4 @@
+symbol,train_start,train_end,test_start,test_end,param_id,score,breakout_lookback,trend_window,trend_method,atr_window,stop_atr,target_atr,max_hold_days,min_volume_ratio
+LLY,2024-04-18,2025-04-21,2025-04-22,2025-07-22,0,,20,50,EMA,14,1.2,2.4,5,0.8
+LLY,2024-07-19,2025-07-22,2025-07-23,2025-10-20,0,,20,50,EMA,14,1.2,2.4,5,0.8
+LLY,2024-10-17,2025-10-20,2025-10-21,2026-01-21,0,,20,50,EMA,14,1.2,2.4,5,0.8

@@ -15,20 +15,20 @@
       <div class="hero-copy">
         <p class="eyebrow">Duke FinTech 533 • Breakout Strategy Project</p>
         <h1>Single-stock breakout research report</h1>
-        <p class="lede">The project has now been tightened to one final rule set: a 20-day breakout level, 50-day EMA trend filter, 80% volume readiness filter, 1.2 ATR stop, 2.4 ATR target, and 5-day timeout. I also shifted the asset-selection framework from ETFs to individual stocks using both quantitative and qualitative reasoning. The tables below still show the last completed published run while the next IBKR rerun is pending.</p>
+        <p class="lede">I tested a fixed long-only breakout rule set on a liquid large-cap stock universe, used daily bars to define the setup, used hourly bars for the first clean breakout entry, and evaluated each candidate through rolling walk-forward out-of-sample windows. The strongest stock in this run was <strong>MU</strong>, which is the focus asset for the trade ledger and performance analysis below.</p>
       </div>
       <div class="hero-panel">
         <div class="hero-stat">
-          <span>Last published asset</span>
-          <strong>SPY</strong>
+          <span>Selected asset</span>
+          <strong>MU</strong>
         </div>
         <div class="hero-stat">
           <span>Out-of-sample trades</span>
-          <strong>9</strong>
+          <strong>10</strong>
         </div>
         <div class="hero-stat">
           <span>Total return</span>
-          <strong>7.55%</strong>
+          <strong>5.90%</strong>
         </div>
       </div>
     </section>
@@ -36,17 +36,17 @@
     <section class="content-grid">
       <article class="story-card">
         <h2>Strategy logic</h2>
-        <p>The final strategy rule set is now fixed instead of optimized over a grid. Daily bars define the setup: the breakout level is the highest high of the prior <strong>20 trading days</strong>, yesterday&apos;s close must be above the <strong>50-day EMA</strong>, and yesterday&apos;s volume must be at least <strong>80%</strong> of its 20-day average. The intended execution is to buy the first clean breakout, risk <strong>1% of equity</strong>, place the stop at <strong>1.2 ATR</strong>, set the target at <strong>2.4 ATR</strong>, and exit after <strong>5 trading days</strong> if neither threshold is hit.</p>
+        <p>The strategy now follows one fixed rule set instead of a parameter sweep. Daily bars define the setup: the breakout level is the highest high of the prior <strong>20 trading days</strong>, yesterday&apos;s close must be above the <strong>50-day EMA</strong>, and yesterday&apos;s volume must be at least <strong>80%</strong> of its 20-day average. The intended execution logic is to buy the first clean breakout after that setup, risk <strong>1% of equity</strong>, place the stop at <strong>1.2 ATR</strong>, set the target at <strong>2.4 ATR</strong>, and exit after <strong>5 trading days</strong> if neither threshold is hit.</p>
       </article>
 
       <article class="story-card">
         <h2>Asset selection</h2>
-        <p>I&apos;m switching the asset-selection process to individual stocks rather than ETFs. The quantitative layer screens a liquid large-cap universe under the same breakout rule set and compares out-of-sample Sharpe ratio, out-of-sample return, drawdown, and trade count. The qualitative layer then breaks ties by asking whether the stock has deep liquidity, sustained institutional participation, and a believable fundamental narrative that can support trend persistence without making the name too dominated by one-off event risk. In other words, I want a stock that both backtests well and makes market-structure sense for breakout trading. The tables currently shown below are from the last completed published run and will be replaced after the next IBKR rerun of the single-stock workflow.</p>
+        <p>I screened 8 liquid large-cap stocks (MU, MSFT, META, AVGO, AAPL, LLY, NVDA, AMZN) using the same fixed breakout rule set and the same rolling walk-forward framework with about one year of training data and the next quarter as out-of-sample test data. Quantitatively, MU ranked best after combining average out-of-sample Sharpe ratio (1.61), total out-of-sample return (5.90%), drawdown control, and trade count (10). Qualitatively, I preferred stocks with deep liquidity, sustained institutional participation, and a narrative that can support trend persistence without overwhelming the chart with one-off event risk. For MU, that qualitative case was: Semiconductor cyclicality often creates tradable expansions, but earnings and guidance risk are meaningful.</p>
       </article>
 
       <article class="story-card full-span">
         <h2>Breakout definition and assumptions</h2>
-        <p>The breakout detection function is implemented in Python in <code>breakout_report_generator.py</code>. The parameters are explicit and easy to locate at the top of the script. The revised code path uses IBKR data through <code>shinybroker</code>, assumes <strong>2 bps slippage</strong> per side, <strong>$0.005 per share commissions</strong> with a <strong>$1 minimum</strong>, and sizes positions so that the initial stop risks about <strong>1% of current equity</strong>. The annual risk-free rate in the Sharpe ratio calculation is <strong>2%</strong>.</p>
+        <p>The breakout detection function is implemented in Python in <code>breakout_report_generator.py</code>. The parameters are explicit and easy to locate at the top of the script. The revised research design focuses on a single-stock universe instead of ETFs and combines quantitative evidence with qualitative judgment when picking the final candidate. Quantitatively, stocks are ranked by out-of-sample Sharpe ratio, out-of-sample return, drawdown, and trade count under the same fixed rule set. Qualitatively, I favor names with deep liquidity, durable institutional participation, and repeated breakout behavior while penalizing names whose gaps or event risk can overwhelm a clean trend-following setup. The backtest uses IBKR data through <code>shinybroker</code>, assumes <strong>2 bps slippage</strong> per side, <strong>$0.005 per share commissions</strong> with a <strong>$1 minimum</strong>, and sizes positions so that the initial stop risks about <strong>1% of current equity</strong>. The annual risk-free rate in the Sharpe ratio calculation is <strong>2%</strong>.</p>
       </article>
     </section>
 
@@ -56,42 +56,42 @@
         
             <div class="metric-card">
               <div class="metric-label">Average return per trade</div>
-              <div class="metric-value">0.77%</div>
+              <div class="metric-value">2.61%</div>
               <p>Mean net return across all out-of-sample trades. This shows whether the typical trade added value after costs.</p>
             </div>
             
 
             <div class="metric-card">
               <div class="metric-label">Annualized Sharpe ratio</div>
-              <div class="metric-value">-0.02</div>
+              <div class="metric-value">1.62</div>
               <p>Computed from daily out-of-sample equity returns using a 2% annual risk-free rate assumption.</p>
             </div>
             
 
             <div class="metric-card">
               <div class="metric-label">Max drawdown</div>
-              <div class="metric-value">-2.86%</div>
+              <div class="metric-value">-1.49%</div>
               <p>Largest peak-to-trough equity decline during the out-of-sample test. Smaller magnitude means the ride was smoother.</p>
             </div>
             
 
             <div class="metric-card">
               <div class="metric-label">Win rate</div>
-              <div class="metric-value">88.89%</div>
+              <div class="metric-value">70.00%</div>
               <p>Share of trades with positive net PnL. It complements expectancy because high win rates can still lose money if losses are too large.</p>
             </div>
             
 
             <div class="metric-card">
               <div class="metric-label">Profit factor</div>
-              <div class="metric-value">8.07</div>
+              <div class="metric-value">4.67</div>
               <p>Gross profits divided by gross losses. Values above 1.0 indicate the winners outweighed the losers.</p>
             </div>
             
 
             <div class="metric-card">
               <div class="metric-label">Expectancy</div>
-              <div class="metric-value">$863.07</div>
+              <div class="metric-value">$595.88</div>
               <p>Average dollar PnL per trade after slippage and commissions.</p>
             </div>
             
@@ -100,15 +100,15 @@
 
     <section class="visual-grid">
       <figure class="visual-card">
-        <img src="assets/equity_curve.png" alt="SPY equity curve">
+        <img src="assets/equity_curve.png" alt="MU equity curve">
         <figcaption>Out-of-sample equity curve for the selected asset.</figcaption>
       </figure>
       <figure class="visual-card">
-        <img src="assets/trade_outcomes.png" alt="SPY trade outcomes">
+        <img src="assets/trade_outcomes.png" alt="MU trade outcomes">
         <figcaption>Trade outcome analysis: successful, timed out, or stop-loss triggered.</figcaption>
       </figure>
       <figure class="visual-card">
-        <img src="assets/trade_pnl_histogram.png" alt="SPY trade pnl histogram">
+        <img src="assets/trade_pnl_histogram.png" alt="MU trade pnl histogram">
         <figcaption>Distribution of per-trade net PnL after commissions and slippage.</figcaption>
       </figure>
     </section>
@@ -117,15 +117,15 @@
       <h2>Downloads</h2>
       <p>The full trade ledger is available as a CSV file, along with the window-level walk-forward summary and the asset ranking table.</p>
       <div class="download-row">
-        <a href="data/spy_trade_blotter.csv">Download SPY trade blotter</a>
-        <a href="data/spy_walkforward_windows.csv">Download SPY walk-forward windows</a>
+        <a href="data/mu_trade_blotter.csv">Download MU trade blotter</a>
+        <a href="data/mu_walkforward_windows.csv">Download MU walk-forward windows</a>
         <a href="data/asset_ranking.csv">Download asset ranking</a>
       </div>
     </section>
 
     <section class="table-section">
       <div class="story-card">
-        <h2>Last published ranking snapshot</h2>
+        <h2>Stock ranking</h2>
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
@@ -142,76 +142,98 @@
   </thead>
   <tbody>
     <tr>
-      <td>SPY</td>
-      <td>15</td>
-      <td>9</td>
-      <td>0.49%</td>
-      <td>1.37</td>
-      <td>-0.22%</td>
-      <td>7.55%</td>
-      <td>-0.02</td>
-      <td>88.89%</td>
-    </tr>
-    <tr>
-      <td>QQQ</td>
-      <td>15</td>
+      <td>MU</td>
+      <td>3</td>
       <td>10</td>
-      <td>0.18%</td>
-      <td>0.22</td>
-      <td>-0.45%</td>
-      <td>2.73%</td>
-      <td>-0.53</td>
+      <td>1.93%</td>
+      <td>1.61</td>
+      <td>-1.10%</td>
+      <td>5.90%</td>
+      <td>1.62</td>
       <td>70.00%</td>
     </tr>
     <tr>
-      <td>XLK</td>
-      <td>15</td>
-      <td>11</td>
-      <td>0.17%</td>
-      <td>-0.36</td>
-      <td>-0.44%</td>
-      <td>2.54%</td>
-      <td>-0.68</td>
-      <td>63.64%</td>
+      <td>MSFT</td>
+      <td>3</td>
+      <td>2</td>
+      <td>0.28%</td>
+      <td>0.43</td>
+      <td>-0.26%</td>
+      <td>0.83%</td>
+      <td>-0.63</td>
+      <td>100.00%</td>
     </tr>
     <tr>
-      <td>XLF</td>
-      <td>15</td>
+      <td>META</td>
+      <td>3</td>
+      <td>3</td>
+      <td>0.60%</td>
+      <td>-0.09</td>
+      <td>-0.54%</td>
+      <td>1.76%</td>
+      <td>0.10</td>
+      <td>66.67%</td>
+    </tr>
+    <tr>
+      <td>AVGO</td>
+      <td>3</td>
       <td>8</td>
-      <td>-0.04%</td>
-      <td>-1.33</td>
-      <td>-0.38%</td>
-      <td>-0.63%</td>
-      <td>-1.25</td>
-      <td>37.50%</td>
-    </tr>
-    <tr>
-      <td>IWM</td>
-      <td>15</td>
-      <td>4</td>
-      <td>0.11%</td>
-      <td>-1.56</td>
-      <td>-0.20%</td>
-      <td>1.67%</td>
-      <td>-1.08</td>
+      <td>0.32%</td>
+      <td>-0.30</td>
+      <td>-1.60%</td>
+      <td>0.94%</td>
+      <td>-0.19</td>
       <td>50.00%</td>
     </tr>
     <tr>
-      <td>SMH</td>
-      <td>15</td>
-      <td>14</td>
-      <td>-0.17%</td>
-      <td>-1.89</td>
-      <td>-0.58%</td>
-      <td>-2.59%</td>
-      <td>-1.31</td>
-      <td>42.86%</td>
+      <td>AAPL</td>
+      <td>3</td>
+      <td>2</td>
+      <td>0.57%</td>
+      <td>-0.31</td>
+      <td>-0.16%</td>
+      <td>1.70%</td>
+      <td>0.08</td>
+      <td>50.00%</td>
+    </tr>
+    <tr>
+      <td>LLY</td>
+      <td>3</td>
+      <td>4</td>
+      <td>-0.21%</td>
+      <td>-1.35</td>
+      <td>-1.11%</td>
+      <td>-0.64%</td>
+      <td>-1.44</td>
+      <td>50.00%</td>
+    </tr>
+    <tr>
+      <td>NVDA</td>
+      <td>3</td>
+      <td>9</td>
+      <td>-0.54%</td>
+      <td>-1.63</td>
+      <td>-1.44%</td>
+      <td>-1.61%</td>
+      <td>-1.30</td>
+      <td>22.22%</td>
+    </tr>
+    <tr>
+      <td>AMZN</td>
+      <td>3</td>
+      <td>5</td>
+      <td>-0.40%</td>
+      <td>-1.66</td>
+      <td>-0.88%</td>
+      <td>-1.20%</td>
+      <td>-1.64</td>
+      <td>20.00%</td>
     </tr>
   </tbody>
 </table>
       </div>
       <div class="story-card">
-        <h2>Walk-forward windows for last published run (SPY)</h2>
+        <h2>Walk-forward windows for MU</h2>
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
@@ -228,175 +250,43 @@
   </thead>
   <tbody>
     <tr>
-      <td>2022-04-18</td>
-      <td>2022-07-18</td>
-      <td>20</td>
-      <td>EMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2022-07-19</td>
-      <td>2022-10-14</td>
-      <td>20</td>
-      <td>EMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2022-10-17</td>
-      <td>2023-01-17</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2023-01-18</td>
-      <td>2023-04-18</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>0.27%</td>
-      <td>-1.22</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>2023-04-19</td>
-      <td>2023-07-19</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>1.92%</td>
-      <td>2.73</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <td>2023-07-20</td>
-      <td>2023-10-17</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2023-10-18</td>
-      <td>2024-01-18</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2024-01-19</td>
-      <td>2024-04-18</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2024-04-19</td>
-      <td>2024-07-19</td>
-      <td>20</td>
-      <td>EMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>1.28%</td>
-      <td>0.69</td>
-      <td>3</td>
-    </tr>
-    <tr>
-      <td>2024-07-22</td>
-      <td>2024-10-17</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2024-10-18</td>
-      <td>2025-01-21</td>
-      <td>20</td>
-      <td>EMA</td>
-      <td>1.0</td>
-      <td>3.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2025-01-22</td>
       <td>2025-04-22</td>
-      <td>20</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <td>2025-04-23</td>
-      <td>2025-07-23</td>
+      <td>2025-07-22</td>
       <td>20</td>
       <td>EMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>3.91%</td>
-      <td>3.27</td>
+      <td>1.2</td>
+      <td>2.4</td>
+      <td>3.14%</td>
+      <td>2.92</td>
       <td>4</td>
     </tr>
     <tr>
-      <td>2025-07-24</td>
-      <td>2025-10-21</td>
-      <td>55</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
+      <td>2025-07-23</td>
+      <td>2025-10-20</td>
+      <td>20</td>
+      <td>EMA</td>
+      <td>1.2</td>
+      <td>2.4</td>
+      <td>1.69%</td>
+      <td>1.07</td>
+      <td>3</td>
     </tr>
     <tr>
-      <td>2025-10-22</td>
-      <td>2026-01-22</td>
-      <td>55</td>
-      <td>SMA</td>
-      <td>1.0</td>
-      <td>2.0</td>
-      <td>0.00%</td>
-      <td>N/A</td>
-      <td>0</td>
+      <td>2025-10-21</td>
+      <td>2026-01-21</td>
+      <td>20</td>
+      <td>EMA</td>
+      <td>1.2</td>
+      <td>2.4</td>
+      <td>0.97%</td>
+      <td>0.84</td>
+      <td>3</td>
     </tr>
   </tbody>
 </table>
       </div>
       <div class="story-card full-span">
-        <h2>Trade blotter for last published run (SPY)</h2>
+        <h2>Trade blotter for MU</h2>
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
@@ -415,121 +305,134 @@
   </thead>
   <tbody>
     <tr>
-      <td>2023-04-14</td>
-      <td>2023-04-18</td>
-      <td>412.81</td>
-      <td>414.21</td>
-      <td>239</td>
+      <td>2025-06-03</td>
+      <td>2025-06-05</td>
+      <td>100.51</td>
+      <td>108.71</td>
+      <td>243</td>
       <td>long</td>
-      <td>3</td>
-      <td>end_of_data</td>
-      <td>Successful</td>
-      <td>292.68</td>
-      <td>0.30%</td>
-    </tr>
-    <tr>
-      <td>2023-07-13</td>
-      <td>2023-07-19</td>
-      <td>447.90</td>
-      <td>455.39</td>
-      <td>267</td>
-      <td>long</td>
-      <td>5</td>
+      <td>13.27</td>
       <td>profit_target</td>
       <td>Successful</td>
-      <td>1,950.07</td>
-      <td>1.63%</td>
+      <td>1,979.45</td>
+      <td>8.10%</td>
     </tr>
     <tr>
-      <td>2024-06-12</td>
-      <td>2024-06-18</td>
-      <td>541.63</td>
-      <td>548.49</td>
-      <td>201</td>
+      <td>2025-06-10</td>
+      <td>2025-06-16</td>
+      <td>112.71</td>
+      <td>118.96</td>
+      <td>226</td>
       <td>long</td>
-      <td>5</td>
+      <td>39.00</td>
       <td>timeout</td>
       <td>Timed out</td>
-      <td>1,333.02</td>
-      <td>1.22%</td>
+      <td>1,399.77</td>
+      <td>5.50%</td>
     </tr>
     <tr>
-      <td>2024-07-05</td>
-      <td>2024-07-11</td>
-      <td>551.77</td>
-      <td>556.48</td>
-      <td>257</td>
+      <td>2025-06-18</td>
+      <td>2025-06-23</td>
+      <td>121.54</td>
+      <td>123.10</td>
+      <td>205</td>
       <td>long</td>
-      <td>5</td>
+      <td>32.50</td>
       <td>timeout</td>
       <td>Timed out</td>
-      <td>1,150.93</td>
-      <td>0.81%</td>
+      <td>307.72</td>
+      <td>1.24%</td>
     </tr>
     <tr>
-      <td>2024-07-17</td>
-      <td>2024-07-18</td>
-      <td>558.80</td>
-      <td>554.44</td>
-      <td>239</td>
+      <td>2025-06-24</td>
+      <td>2025-06-30</td>
+      <td>126.05</td>
+      <td>123.65</td>
+      <td>212</td>
       <td>long</td>
-      <td>2</td>
+      <td>39.00</td>
+      <td>timeout</td>
+      <td>Timed out</td>
+      <td>-521.51</td>
+      <td>-1.95%</td>
+    </tr>
+    <tr>
+      <td>2025-09-16</td>
+      <td>2025-09-22</td>
+      <td>158.68</td>
+      <td>163.86</td>
+      <td>151</td>
+      <td>long</td>
+      <td>39.00</td>
+      <td>timeout</td>
+      <td>Timed out</td>
+      <td>770.44</td>
+      <td>3.22%</td>
+    </tr>
+    <tr>
+      <td>2025-10-01</td>
+      <td>2025-10-06</td>
+      <td>176.63</td>
+      <td>193.43</td>
+      <td>123</td>
+      <td>long</td>
+      <td>32.36</td>
+      <td>profit_target</td>
+      <td>Successful</td>
+      <td>2,055.09</td>
+      <td>9.46%</td>
+    </tr>
+    <tr>
+      <td>2025-10-07</td>
+      <td>2025-10-07</td>
+      <td>194.03</td>
+      <td>184.52</td>
+      <td>111</td>
+      <td>long</td>
+      <td>0.41</td>
       <td>stop_loss</td>
       <td>Stop-loss triggered</td>
-      <td>-1,097.98</td>
-      <td>-0.82%</td>
+      <td>-1,066.11</td>
+      <td>-4.95%</td>
     </tr>
     <tr>
-      <td>2025-06-04</td>
-      <td>2025-06-10</td>
-      <td>596.96</td>
-      <td>603.08</td>
-      <td>148</td>
+      <td>2025-12-24</td>
+      <td>2025-12-29</td>
+      <td>286.12</td>
+      <td>285.61</td>
+      <td>56</td>
       <td>long</td>
-      <td>5</td>
+      <td>32.50</td>
       <td>timeout</td>
       <td>Timed out</td>
-      <td>868.24</td>
-      <td>0.98%</td>
+      <td>-36.96</td>
+      <td>-0.23%</td>
     </tr>
     <tr>
-      <td>2025-06-25</td>
-      <td>2025-07-01</td>
-      <td>607.91</td>
-      <td>617.65</td>
-      <td>172</td>
+      <td>2026-01-06</td>
+      <td>2026-01-12</td>
+      <td>332.42</td>
+      <td>344.64</td>
+      <td>55</td>
       <td>long</td>
-      <td>5</td>
+      <td>39.00</td>
       <td>timeout</td>
       <td>Timed out</td>
-      <td>1,631.13</td>
-      <td>1.56%</td>
+      <td>662.65</td>
+      <td>3.62%</td>
     </tr>
     <tr>
-      <td>2025-07-03</td>
-      <td>2025-07-10</td>
-      <td>622.45</td>
-      <td>625.82</td>
-      <td>188</td>
+      <td>2026-01-21</td>
+      <td>2026-01-21</td>
+      <td>380.57</td>
+      <td>388.93</td>
+      <td>50</td>
       <td>long</td>
-      <td>5</td>
-      <td>timeout</td>
-      <td>Timed out</td>
-      <td>584.62</td>
-      <td>0.50%</td>
-    </tr>
-    <tr>
-      <td>2025-07-18</td>
-      <td>2025-07-23</td>
-      <td>629.30</td>
-      <td>634.21</td>
-      <td>227</td>
-      <td>long</td>
-      <td>4</td>
+      <td>1.49</td>
       <td>end_of_data</td>
       <td>Successful</td>
-      <td>1,054.94</td>
-      <td>0.74%</td>
+      <td>408.31</td>
+      <td>2.15%</td>
     </tr>
   </tbody>
 </table>
@@ -546,7 +449,7 @@
   <tbody>
     <tr>
       <td>Timed out</td>
-      <td>5</td>
+      <td>6</td>
     </tr>
     <tr>
       <td>Successful</td>
