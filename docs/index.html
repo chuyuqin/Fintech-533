@@ -14,12 +14,12 @@
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">Duke FinTech 533 • Breakout Strategy Project</p>
-        <h1>Walk-forward breakout backtest on U.S. ETFs</h1>
-        <p class="lede">I tested a simple long-only breakout strategy on a liquid ETF universe, optimized parameters only on trailing training windows, and evaluated the chosen settings on the next out-of-sample quarter. The strongest candidate in this run was <strong>SPY</strong>, which is the focus asset for the trade ledger and performance analysis below.</p>
+        <h1>Single-stock breakout research report</h1>
+        <p class="lede">The project has now been tightened to one final rule set: a 20-day breakout level, 50-day EMA trend filter, 80% volume readiness filter, 1.2 ATR stop, 2.4 ATR target, and 5-day timeout. I also shifted the asset-selection framework from ETFs to individual stocks using both quantitative and qualitative reasoning. The tables below still show the last completed published run while the next IBKR rerun is pending.</p>
       </div>
       <div class="hero-panel">
         <div class="hero-stat">
-          <span>Selected asset</span>
+          <span>Last published asset</span>
           <strong>SPY</strong>
         </div>
         <div class="hero-stat">
@@ -36,17 +36,17 @@
     <section class="content-grid">
       <article class="story-card">
         <h2>Strategy logic</h2>
-        <p>The strategy looks for a fresh upside breakout after an established uptrend. On each trading day, I compute the highest high over the prior <strong>20 days</strong>, require yesterday&apos;s close to be above a <strong>50-day SMA</strong> trend filter, and require yesterday&apos;s volume to be at least <strong>75%</strong> of its 20-day average. A breakout signal occurs only when today&apos;s close rises above that rolling high after being at or below the level the day before. The strategy enters at the next day&apos;s open, sets a stop at <strong>1.0 ATR</strong>, a target at <strong>2.0 ATR</strong>, and exits after <strong>5 trading days</strong> if neither threshold is hit.</p>
+        <p>The final strategy rule set is now fixed instead of optimized over a grid. Daily bars define the setup: the breakout level is the highest high of the prior <strong>20 trading days</strong>, yesterday&apos;s close must be above the <strong>50-day EMA</strong>, and yesterday&apos;s volume must be at least <strong>80%</strong> of its 20-day average. The intended execution is to buy the first clean breakout, risk <strong>1% of equity</strong>, place the stop at <strong>1.2 ATR</strong>, set the target at <strong>2.4 ATR</strong>, and exit after <strong>5 trading days</strong> if neither threshold is hit.</p>
       </article>
 
       <article class="story-card">
         <h2>Asset selection</h2>
-        <p>I screened 6 liquid U.S. ETFs (SPY, QQQ, XLK, XLF, IWM, SMH) and ran the same breakout parameter grid on each one using rolling walk-forward windows with about one year of training data and the next quarter as out-of-sample test data. I selected SPY because it produced the strongest combination of average out-of-sample Sharpe ratio (1.37), total out-of-sample return (7.55%), and trade count (9). That makes the selection process explicit: SPY was not hand-picked first and tested later; it was chosen after screening the full ETF universe under the same rules.</p>
+        <p>I&apos;m switching the asset-selection process to individual stocks rather than ETFs. The quantitative layer screens a liquid large-cap universe under the same breakout rule set and compares out-of-sample Sharpe ratio, out-of-sample return, drawdown, and trade count. The qualitative layer then breaks ties by asking whether the stock has deep liquidity, sustained institutional participation, and a believable fundamental narrative that can support trend persistence without making the name too dominated by one-off event risk. In other words, I want a stock that both backtests well and makes market-structure sense for breakout trading. The tables currently shown below are from the last completed published run and will be replaced after the next IBKR rerun of the single-stock workflow.</p>
       </article>
 
       <article class="story-card full-span">
         <h2>Breakout definition and assumptions</h2>
-        <p>The breakout detection function is implemented in Python in <code>breakout_report_generator.py</code>. The parameters are explicit and easy to locate at the top of the script. The backtest uses daily OHLCV data retrieved for this project, assumes <strong>2 bps slippage</strong> per side, <strong>$0.005 per share commissions</strong> with a <strong>$1 minimum</strong>, and sizes positions so that the initial stop risks about <strong>1% of current equity</strong>. The annual risk-free rate in the Sharpe ratio calculation is <strong>2%</strong>.</p>
+        <p>The breakout detection function is implemented in Python in <code>breakout_report_generator.py</code>. The parameters are explicit and easy to locate at the top of the script. The revised code path uses IBKR data through <code>shinybroker</code>, assumes <strong>2 bps slippage</strong> per side, <strong>$0.005 per share commissions</strong> with a <strong>$1 minimum</strong>, and sizes positions so that the initial stop risks about <strong>1% of current equity</strong>. The annual risk-free rate in the Sharpe ratio calculation is <strong>2%</strong>.</p>
       </article>
     </section>
 
@@ -125,7 +125,7 @@
 
     <section class="table-section">
       <div class="story-card">
-        <h2>Universe ranking</h2>
+        <h2>Last published ranking snapshot</h2>
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
@@ -211,7 +211,7 @@
 </table>
       </div>
       <div class="story-card">
-        <h2>Walk-forward windows for SPY</h2>
+        <h2>Walk-forward windows for last published run (SPY)</h2>
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
@@ -396,7 +396,7 @@
 </table>
       </div>
       <div class="story-card full-span">
-        <h2>Trade blotter for SPY</h2>
+        <h2>Trade blotter for last published run (SPY)</h2>
         <table class="dataframe data-table">
   <thead>
     <tr style="text-align: right;">
